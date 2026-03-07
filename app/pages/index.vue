@@ -139,7 +139,11 @@
 
     <!-- フッター -->
     <footer class="py-8 text-center text-sm text-gray-400">
-      <p>© 2025 SNS Post Calendar</p>
+      <div class="flex justify-center gap-6 mb-3">
+        <NuxtLink to="/privacy" class="hover:text-gray-600">プライバシーポリシー</NuxtLink>
+        <NuxtLink to="/contact" class="hover:text-gray-600">お問い合わせ</NuxtLink>
+      </div>
+      <p>© 2026 SNS Post Calendar</p>
     </footer>
 
   </div>
