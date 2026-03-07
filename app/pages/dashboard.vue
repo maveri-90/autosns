@@ -161,11 +161,12 @@ const generateIdeas = async () => {
   }
 }
 
-const selectIdea = (idea: any) => {
+const selectIdea = async (idea: any) => {
   selectedIdea.value = idea
   activePlatform.value = profile.value?.sns_platforms?.[0] || 'X'
   generatedPost.value = ''
   scheduledDate.value = targetMonth.value + '-01'
+  await generatePost()
 }
 
 const generatePost = async () => {
@@ -208,6 +209,7 @@ const savePost = async () => {
 }
 
 const logout = async () => {
+  localStorage.removeItem('sns-ideas')
   await supabase.auth.signOut()
   router.push('/login')
 }
