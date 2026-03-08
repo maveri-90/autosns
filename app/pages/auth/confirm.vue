@@ -25,7 +25,6 @@ const loading = ref(true)
 const error = ref('')
 
 onMounted(async () => {
-  // Supabaseサーバーがエラーをクエリパラメータで返す場合
   const urlError = route.query.error as string
   if (urlError) {
     error.value = 'このリンクは期限切れか無効です。ログインページから確認メールを再送してください。'
@@ -33,27 +32,22 @@ onMounted(async () => {
     return
   }
 
-  // implicitフロー: supabase-jsがURLハッシュ(#access_token=...)を自動検出
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-    if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) {
-      subscription.unsubscribe()
+  const token_hash = route.query.token_hash as string
+  const type = (route.query.type as string) || 'email'
+
+  if (token_hash) {
+    const { error: verifyError } = await supabase.auth.verifyOtp({ token_hash, type: type as any })
+    if (verifyError) {
+      error.value = 'メール確認に失敗しました。リンクが期限切れの可能性があります。再送をお試しください。'
+    } else {
       router.push('/dashboard')
     }
-  })
-
-  const { data: { session } } = await supabase.auth.getSession()
-  if (session) {
-    subscription.unsubscribe()
-    router.push('/dashboard')
+    loading.value = false
     return
   }
 
-  setTimeout(() => {
-    subscription.unsubscribe()
-    if (loading.value) {
-      error.value = 'メール確認に失敗しました。リンクが期限切れの可能性があります。再送をお試しください。'
-      loading.value = false
-    }
-  }, 5000)
+  // token_hashもerrorもない場合（古いリンク等）
+  error.value = '無効なリンクです。ログインページから確認メールを再送してください。'
+  loading.value = false
 })
 </script>
