@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 
 const PLAN_LIMITS: Record<string, number> = {
   free: 3,
-  starter: 5,
+  starter: 30,
 }
 
 export default defineEventHandler(async (event) => {
