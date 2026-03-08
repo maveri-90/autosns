@@ -25,38 +25,35 @@ const loading = ref(true)
 const error = ref('')
 
 onMounted(async () => {
-  const token_hash = route.query.token_hash as string
-  const type = route.query.type as string
-  const code = route.query.code as string
-
-  console.log('URL params:', { code, token_hash, type, hash: window.location.hash, fullURL: window.location.href })
-
-  if (code) {
-    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
-    if (exchangeError) {
-      console.error('exchangeCodeForSession error:', exchangeError)
-      error.value = `確認に失敗しました: ${exchangeError.message}`
-    } else {
-      router.push('/dashboard')
-    }
-  } else if (token_hash && type) {
-    const { error: verifyError } = await supabase.auth.verifyOtp({ token_hash, type: type as any })
-    if (verifyError) {
-      console.error('verifyOtp error:', verifyError)
-      error.value = `確認に失敗しました: ${verifyError.message}`
-    } else {
-      router.push('/dashboard')
-    }
-  } else {
-    // implicitフロー: URLハッシュにアクセストークンがある場合
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) {
-      router.push('/dashboard')
-    } else {
-      error.value = `無効なリンクです。URL: ${window.location.search}`
-    }
+  // Supabaseサーバーがエラーをクエリパラメータで返す場合
+  const urlError = route.query.error as string
+  if (urlError) {
+    error.value = 'このリンクは期限切れか無効です。ログインページから確認メールを再送してください。'
+    loading.value = false
+    return
   }
 
-  loading.value = false
+  // implicitフロー: supabase-jsがURLハッシュ(#access_token=...)を自動検出
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) {
+      subscription.unsubscribe()
+      router.push('/dashboard')
+    }
+  })
+
+  const { data: { session } } = await supabase.auth.getSession()
+  if (session) {
+    subscription.unsubscribe()
+    router.push('/dashboard')
+    return
+  }
+
+  setTimeout(() => {
+    subscription.unsubscribe()
+    if (loading.value) {
+      error.value = 'メール確認に失敗しました。リンクが期限切れの可能性があります。再送をお試しください。'
+      loading.value = false
+    }
+  }, 5000)
 })
 </script>
