@@ -88,54 +88,8 @@
         </div>
       </div>
 
-      <!-- 雑談投稿文生成 -->
-      <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-        <div class="flex items-center justify-between mb-1">
-          <h2 class="text-lg font-bold">雑談・日常投稿を作る</h2>
-          <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">業種に関係なくOK</span>
-        </div>
-        <p class="text-sm text-gray-500 mb-4">趣味・日常・感想など、あなたの人柄が伝わる投稿文を生成します</p>
-        <div class="flex gap-2 mb-3">
-          <input
-            v-model="casualTopic"
-            type="text"
-            placeholder="例：最近ハマっているコーヒー豆、週末の登山、買ったばかりのキーボード"
-            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div class="flex gap-2 mb-3">
-          <button
-            v-for="sns in (profile?.sns_platforms || ['X'])" :key="sns"
-            @click="casualPlatform = sns"
-            :class="['border rounded px-3 py-1 text-sm', casualPlatform === sns ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 text-gray-600']"
-          >{{ sns }}</button>
-        </div>
-        <button
-          @click="generateCasualPost"
-          :disabled="generatingCasual || !casualTopic.trim()"
-          class="bg-purple-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
-        >
-          {{ generatingCasual ? '生成中...' : '投稿文を生成する' }}
-        </button>
-        <div v-if="casualPost" class="mt-4">
-          <textarea
-            v-model="casualPost"
-            rows="6"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
-          />
-          <div class="mb-3">
-            <label class="block text-sm text-gray-600 mb-1">投稿予定日</label>
-            <input
-              v-model="casualScheduledDate"
-              type="date"
-              class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <button @click="saveCasualPost" class="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-green-700">保存する</button>
-        </div>
-      </div>
 
-      <!-- トースト通知 -->
+<!-- トースト通知 -->
       <Transition name="toast">
         <div v-if="toast.show"
           class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-medium text-white"
@@ -210,11 +164,6 @@ const profile = ref<any>(null)
 const selectedIdea = ref<any>(null)
 const activePlatform = ref('X')
 const scheduledDate = ref('')
-const casualTopic = ref('')
-const casualPlatform = ref('X')
-const casualPost = ref('')
-const generatingCasual = ref(false)
-const casualScheduledDate = ref('')
 let currentUserId = ''
 
 const now = new Date()
@@ -279,47 +228,6 @@ const generatePost = async () => {
   } finally {
     generatingPost.value = false
   }
-}
-
-const generateCasualPost = async () => {
-  generatingCasual.value = true
-  casualPost.value = ''
-  try {
-    const res = await $fetch('/api/generate-casual-post', {
-      method: 'POST',
-      body: {
-        topic: casualTopic.value,
-        platform: casualPlatform.value,
-        tone: profile.value?.tone || 'casual',
-        userId: currentUserId
-      }
-    })
-    casualPost.value = (res as any).content
-    const now = new Date()
-    casualScheduledDate.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
-  } catch (e: any) {
-    showToast(`エラー: ${e.data?.message || e.message}`, 'error')
-  } finally {
-    generatingCasual.value = false
-  }
-}
-
-const saveCasualPost = async () => {
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return
-  const { error } = await supabase.from('posts').insert({
-    user_id: session.user.id,
-    title: casualTopic.value,
-    content: casualPost.value,
-    category: '雑談',
-    sns_platform: casualPlatform.value,
-    status: 'draft',
-    scheduled_date: casualScheduledDate.value
-  })
-  if (error) { showToast(`保存エラー: ${error.message}`, 'error'); return }
-  casualPost.value = ''
-  casualTopic.value = ''
-  showToast('保存しました！')
 }
 
 const savePost = async () => {
