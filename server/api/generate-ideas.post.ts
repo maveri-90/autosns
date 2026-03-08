@@ -1,7 +1,10 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@supabase/supabase-js'
 
-const FREE_LIMIT = 3
+const PLAN_LIMITS: Record<string, number> = {
+  free: 3,
+  starter: 5,
+}
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -23,6 +26,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (profile && profile.plan !== 'pro') {
+    const limit = PLAN_LIMITS[profile.plan] ?? PLAN_LIMITS.free
     const today = new Date()
     const resetAt = profile.ideas_reset_at ? new Date(profile.ideas_reset_at) : null
     const isNewMonth = !resetAt ||
@@ -37,10 +41,11 @@ export default defineEventHandler(async (event) => {
       profile.ideas_count = 0
     }
 
-    if ((profile.ideas_count || 0) >= FREE_LIMIT) {
+    if ((profile.ideas_count || 0) >= limit) {
+      const planName = profile.plan === 'starter' ? 'スタータープラン' : 'フリープラン'
       throw createError({
         statusCode: 429,
-        message: `フリープランのネタ生成は月${FREE_LIMIT}回までです。プロプランにアップグレードしてください。`
+        message: `${planName}のネタ生成は月${limit}回までです。上位プランにアップグレードしてください。`
       })
     }
   }
@@ -96,6 +101,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const result = JSON.parse(jsonMatch[0])
-  const remaining = profile?.plan === 'pro' ? null : FREE_LIMIT - (profile?.ideas_count || 0) - 1
+  const limit = PLAN_LIMITS[profile?.plan] ?? PLAN_LIMITS.free
+  const remaining = profile?.plan === 'pro' ? null : limit - (profile?.ideas_count || 0) - 1
   return { ...result, remaining }
 })
