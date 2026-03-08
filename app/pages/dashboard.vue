@@ -8,6 +8,9 @@
           <NuxtLink to="/calendar" class="text-sm text-blue-600 hover:underline">カレンダーを見る</NuxtLink>
           <NuxtLink to="/pricing" class="text-sm text-gray-500 hover:underline">料金プラン</NuxtLink>
           <NuxtLink to="/onboarding" class="text-sm text-gray-500 hover:underline">業種・SNS設定</NuxtLink>
+          <button v-if="profile?.plan && profile.plan !== 'free'" @click="openPortal" :disabled="portalLoading" class="text-sm text-gray-500 hover:underline disabled:opacity-50">
+            {{ portalLoading ? '処理中...' : 'プラン管理' }}
+          </button>
           <span class="text-sm text-gray-400">{{ user?.email }}</span>
           <button @click="logout" class="text-sm text-gray-500 hover:text-gray-700">ログアウト</button>
         </div>
@@ -26,6 +29,9 @@
         <NuxtLink to="/calendar" class="text-sm text-blue-600" @click="mobileMenuOpen = false">カレンダーを見る</NuxtLink>
         <NuxtLink to="/pricing" class="text-sm text-gray-500" @click="mobileMenuOpen = false">料金プラン</NuxtLink>
         <NuxtLink to="/onboarding" class="text-sm text-gray-500" @click="mobileMenuOpen = false">業種・SNS設定</NuxtLink>
+        <button v-if="profile?.plan && profile.plan !== 'free'" @click="openPortal" :disabled="portalLoading" class="text-sm text-gray-500 text-left disabled:opacity-50">
+          {{ portalLoading ? '処理中...' : 'プラン管理' }}
+        </button>
         <span class="text-sm text-gray-400">{{ user?.email }}</span>
         <button @click="logout" class="text-sm text-red-500 text-left">ログアウト</button>
       </div>
@@ -142,6 +148,7 @@ const user = useSupabaseUser()
 const router = useRouter()
 
 const mobileMenuOpen = ref(false)
+const portalLoading = ref(false)
 const toast = ref({ show: false, message: '', type: 'success' })
 let toastTimer: ReturnType<typeof setTimeout>
 const showToast = (message: string, type: 'success' | 'error' = 'success') => {
@@ -248,6 +255,20 @@ const savePost = async () => {
 }
 
 onUnmounted(() => clearTimeout(toastTimer))
+
+const openPortal = async () => {
+  portalLoading.value = true
+  try {
+    const res = await $fetch('/api/stripe/portal', {
+      method: 'POST',
+      body: { userId: currentUserId }
+    })
+    window.location.href = (res as any).url
+  } catch (e: any) {
+    showToast(`エラー: ${e.data?.message || e.message}`, 'error')
+    portalLoading.value = false
+  }
+}
 
 const logout = async () => {
   localStorage.removeItem('sns-ideas')
