@@ -164,7 +164,7 @@ const resendConfirmation = async () => {
     options: { emailRedirectTo: 'https://autosns-umber.vercel.app/auth/confirm' }
   })
   if (error) {
-    resendError.value = '送信に失敗しました'
+    resendError.value = `送信に失敗しました（${error.message}）`
   } else {
     resendMsg.value = `${email.value} に再送しました`
   }
