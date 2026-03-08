@@ -1,7 +1,13 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div class="min-h-screen bg-gray-50">
+    <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+      <span class="text-xl font-bold text-blue-600">SNS Post Calendar</span>
+      <NuxtLink to="/dashboard" class="text-sm text-gray-500 hover:underline">← ダッシュボードへ戻る</NuxtLink>
+    </header>
+
+    <div class="flex items-center justify-center py-12 px-4">
     <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-lg">
-      <h1 class="text-2xl font-bold mb-2">はじめに設定しましょう</h1>
+      <h1 class="text-2xl font-bold mb-2">業種・SNS設定</h1>
       <p class="text-gray-500 mb-8">あなたのビジネスに合ったネタを提案します</p>
 
       <form @submit.prevent="saveProfile" class="space-y-6">
@@ -123,6 +129,7 @@
           {{ loading ? '保存中...' : '設定を保存してはじめる' }}
         </button>
       </form>
+    </div>
     </div>
   </div>
 </template>

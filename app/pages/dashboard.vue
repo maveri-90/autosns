@@ -157,24 +157,18 @@ const showToast = (message: string, type: 'success' | 'error' = 'success') => {
   toastTimer = setTimeout(() => { toast.value.show = false }, 3000)
 }
 
+const { generating, ideas, ideasRemaining, generatingPost, generatedPost } = useGenerationState()
+
 const profile = ref<any>(null)
-const ideas = ref<any[]>([])
-const generating = ref(false)
 const selectedIdea = ref<any>(null)
 const activePlatform = ref('X')
-const generatedPost = ref('')
-const generatingPost = ref(false)
 const scheduledDate = ref('')
-const ideasRemaining = ref<number | null>(null)
 let currentUserId = ''
 
 const now = new Date()
 const targetMonth = ref(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`)
 
 onMounted(async () => {
-  const saved = localStorage.getItem('sns-ideas')
-  if (saved) ideas.value = JSON.parse(saved)
-
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) return
   currentUserId = session.user.id
@@ -199,7 +193,6 @@ const generateIdeas = async () => {
     })
     ideas.value = (res as any).ideas
     ideasRemaining.value = (res as any).remaining
-    localStorage.setItem('sns-ideas', JSON.stringify(ideas.value))
   } catch (e: any) {
     showToast(`エラー: ${e.data?.message || e.message || JSON.stringify(e)}`, 'error')
   } finally {
@@ -271,7 +264,8 @@ const openPortal = async () => {
 }
 
 const logout = async () => {
-  localStorage.removeItem('sns-ideas')
+  ideas.value = []
+  ideasRemaining.value = null
   await supabase.auth.signOut()
   router.push('/login')
 }
