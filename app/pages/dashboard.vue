@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <header class="bg-white shadow-sm px-6 py-4">
       <div class="flex justify-between items-center">
-        <h1 class="text-xl font-bold text-blue-600">SNS Post Calendar</h1>
+        <NuxtLink to="/dashboard" class="text-xl font-bold text-blue-600">SNS Post Calendar</NuxtLink>
         <!-- デスクトップナビ -->
         <div class="hidden md:flex items-center gap-4">
           <NuxtLink to="/calendar" class="text-sm text-blue-600 hover:underline">カレンダーを見る</NuxtLink>
