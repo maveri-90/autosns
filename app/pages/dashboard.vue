@@ -82,6 +82,16 @@
         </div>
       </div>
 
+      <!-- トースト通知 -->
+      <Transition name="toast">
+        <div v-if="toast.show"
+          class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-medium text-white"
+          :class="toast.type === 'error' ? 'bg-red-500' : 'bg-green-500'"
+        >
+          {{ toast.message }}
+        </div>
+      </Transition>
+
       <!-- 投稿文生成モーダル -->
       <div v-if="selectedIdea" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg mx-4">
@@ -132,6 +142,14 @@ const user = useSupabaseUser()
 const router = useRouter()
 
 const mobileMenuOpen = ref(false)
+const toast = ref({ show: false, message: '', type: 'success' })
+let toastTimer: ReturnType<typeof setTimeout>
+const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+  clearTimeout(toastTimer)
+  toast.value = { show: true, message, type }
+  toastTimer = setTimeout(() => { toast.value.show = false }, 3000)
+}
+
 const profile = ref<any>(null)
 const ideas = ref<any[]>([])
 const generating = ref(false)
@@ -176,7 +194,7 @@ const generateIdeas = async () => {
     ideasRemaining.value = (res as any).remaining
     localStorage.setItem('sns-ideas', JSON.stringify(ideas.value))
   } catch (e: any) {
-    alert(`エラー: ${e.data?.message || e.message || JSON.stringify(e)}`)
+    showToast(`エラー: ${e.data?.message || e.message || JSON.stringify(e)}`, 'error')
   } finally {
     generating.value = false
   }
@@ -205,7 +223,7 @@ const generatePost = async () => {
     })
     generatedPost.value = (res as any).content
   } catch (e: any) {
-    alert(`エラー: ${e.data?.message || e.message}`)
+    showToast(`エラー: ${e.data?.message || e.message}`, 'error')
   } finally {
     generatingPost.value = false
   }
@@ -223,11 +241,13 @@ const savePost = async () => {
     status: 'draft',
     scheduled_date: scheduledDate.value
   })
-  if (error) { alert(`保存エラー: ${error.message}`); return }
+  if (error) { showToast(`保存エラー: ${error.message}`, 'error'); return }
   selectedIdea.value = null
   generatedPost.value = ''
-  alert('保存しました！')
+  showToast('保存しました！')
 }
+
+onUnmounted(() => clearTimeout(toastTimer))
 
 const logout = async () => {
   localStorage.removeItem('sns-ideas')
@@ -235,3 +255,8 @@ const logout = async () => {
   router.push('/login')
 }
 </script>
+
+<style scoped>
+.toast-enter-active, .toast-leave-active { transition: all 0.3s ease; }
+.toast-enter-from, .toast-leave-to { opacity: 0; transform: translateX(-50%) translateY(16px); }
+</style>
