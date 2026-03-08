@@ -105,7 +105,7 @@ const loginWithGoogle = async () => {
   googleLoading.value = true
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: 'https://autosns-umber.vercel.app/dashboard' }
+    options: { redirectTo: 'https://autosns-umber.vercel.app/auth/callback' }
   })
   if (error) errorMsg.value = 'Googleログインに失敗しました'
   googleLoading.value = false
