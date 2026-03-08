@@ -88,7 +88,8 @@
         </div>
       </div>
 
-      <!-- トースト通知 -->
+
+<!-- トースト通知 -->
       <Transition name="toast">
         <div v-if="toast.show"
           class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-medium text-white"
