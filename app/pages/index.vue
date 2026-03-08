@@ -150,6 +150,42 @@
 </template>
 
 <script setup lang="ts">
+useHead({
+  title: 'SNS Post Calendar｜AIがSNS投稿ネタを自動提案',
+  meta: [
+    { name: 'description', content: '業種・ターゲットを設定するだけでAIが今月の投稿ネタを20件提案。X・Instagram・Threads対応の投稿文を自動生成し、カレンダーでスケジュール管理。個人事業主・フリーランスのSNS運用を効率化。' },
+    { name: 'keywords', content: 'SNS投稿 自動生成, SNS運用 AI, 投稿ネタ 自動, SNSカレンダー, 個人事業主 SNS, Instagram 投稿文 自動生成, X Twitter 投稿自動化' },
+    { property: 'og:title', content: 'SNS Post Calendar｜AIがSNS投稿ネタを自動提案' },
+    { property: 'og:description', content: '業種・ターゲットを設定するだけでAIが今月の投稿ネタを20件提案。SNS運用をラクにするAIツール。' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://autosns-umber.vercel.app' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'SNS Post Calendar｜AIがSNS投稿ネタを自動提案' },
+    { name: 'twitter:description', content: '業種を設定するだけでAIが投稿ネタを20件提案。X・Instagram・Threads対応。' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://autosns-umber.vercel.app' }
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'SNS Post Calendar',
+        applicationCategory: 'BusinessApplication',
+        description: 'AIがSNS投稿ネタを自動提案・投稿文を自動生成するサービス。個人事業主・フリーランスのSNS運用を効率化。',
+        offers: [
+          { '@type': 'Offer', price: '0', priceCurrency: 'JPY', name: 'フリープラン' },
+          { '@type': 'Offer', price: '1980', priceCurrency: 'JPY', name: 'プロプラン' }
+        ],
+        url: 'https://autosns-umber.vercel.app',
+        inLanguage: 'ja'
+      })
+    }
+  ]
+})
+
 // ログイン済みの場合はダッシュボードへリダイレクト
 const user = useSupabaseUser()
 watchEffect(() => {

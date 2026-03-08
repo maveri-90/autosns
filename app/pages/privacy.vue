@@ -90,3 +90,13 @@
     </footer>
   </div>
 </template>
+
+<script setup lang="ts">
+useHead({
+  title: 'プライバシーポリシー｜SNS Post Calendar',
+  meta: [
+    { name: 'description', content: 'SNS Post Calendarのプライバシーポリシーページです。' },
+    { name: 'robots', content: 'noindex' }
+  ]
+})
+</script>

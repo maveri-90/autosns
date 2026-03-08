@@ -75,6 +75,12 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+useHead({
+  title: '料金プラン｜SNS Post Calendar',
+  meta: [
+    { name: 'description', content: 'SNS Post Calendarの料金プラン。フリープラン（無料）とプロプラン（月額¥1,980）をご用意。AIネタ生成・投稿文自動作成・カレンダー管理。' }
+  ]
+})
 
 const supabase = useSupabaseClient()
 const route = useRoute()
