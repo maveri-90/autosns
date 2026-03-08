@@ -46,7 +46,14 @@
 
       <!-- AIネタ生成 -->
       <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-        <h2 class="text-lg font-bold mb-4">AIネタ提案</h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-bold">AIネタ提案</h2>
+          <NuxtLink v-if="profile" to="/onboarding" class="text-xs text-gray-400 hover:text-blue-500 hover:underline">
+            {{ profile.business_type || '業種未設定' }}
+            <span v-if="profile.target_audience"> ／ {{ profile.target_audience }}</span>
+            　✎
+          </NuxtLink>
+        </div>
         <div class="flex gap-4 items-end">
           <div>
             <label class="block text-sm text-gray-600 mb-1">対象月</label>
@@ -143,6 +150,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+useHead({ title: 'ダッシュボード｜SNS Post Calendar' })
 
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()

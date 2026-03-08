@@ -87,6 +87,7 @@
 </template>
 
 <script setup lang="ts">
+useHead({ title: 'お問い合わせ｜SNS Post Calendar' })
 const form = reactive({
   name: '',
   email: '',

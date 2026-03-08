@@ -92,6 +92,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+useHead({ title: '投稿カレンダー｜SNS Post Calendar' })
 
 const supabase = useSupabaseClient()
 const router = useRouter()

@@ -136,6 +136,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+useHead({ title: '業種・SNS設定｜SNS Post Calendar' })
 
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
