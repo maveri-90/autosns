@@ -5,7 +5,7 @@
       <NuxtLink to="/dashboard" class="text-sm text-gray-500 hover:underline">ダッシュボードへ</NuxtLink>
     </header>
 
-    <main class="max-w-4xl mx-auto px-6 py-16">
+    <main class="max-w-5xl mx-auto px-6 py-16">
       <div class="text-center mb-12">
         <h2 class="text-3xl font-bold mb-4">料金プラン</h2>
         <p class="text-gray-500">シンプルな料金体系で、必要な機能だけ使えます</p>
@@ -15,7 +15,7 @@
         {{ successMsg }}
       </div>
 
-      <div class="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-6">
         <!-- フリープラン -->
         <div class="bg-white rounded-xl shadow-sm p-8 border border-gray-200">
           <h3 class="text-xl font-bold mb-2">フリー</h3>
@@ -23,18 +23,46 @@
           <p class="text-gray-500 text-sm mb-6">ずっと無料</p>
           <ul class="space-y-3 mb-8 text-sm text-gray-600">
             <li class="flex items-center gap-2">
+              <span class="text-green-500">✓</span> AIネタ生成（月3回まで）
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-green-500">✓</span> 投稿文生成（月10回まで）
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-green-500">✓</span> 投稿カレンダー
+            </li>
+          </ul>
+          <div class="w-full border border-gray-300 text-gray-600 py-3 rounded-lg text-sm font-medium text-center">
+            無料で始める
+          </div>
+        </div>
+
+        <!-- スタータープラン -->
+        <div class="bg-white rounded-xl shadow-sm p-8 border border-gray-200">
+          <h3 class="text-xl font-bold mb-2">スターター</h3>
+          <div class="text-4xl font-bold mb-1">¥490</div>
+          <p class="text-gray-500 text-sm mb-6">/ 月（税込）</p>
+          <ul class="space-y-3 mb-8 text-sm text-gray-600">
+            <li class="flex items-center gap-2">
               <span class="text-green-500">✓</span> AIネタ生成（月5回まで）
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-green-500">✓</span> 投稿文生成（月20回まで）
             </li>
             <li class="flex items-center gap-2">
               <span class="text-green-500">✓</span> 投稿カレンダー
             </li>
             <li class="flex items-center gap-2">
-              <span class="text-green-500">✓</span> 投稿保存（10件まで）
+              <span class="text-green-500">✓</span> 複数SNS対応
             </li>
           </ul>
-          <div class="w-full border border-gray-300 text-gray-600 py-3 rounded-lg text-sm font-medium text-center">
-            現在のプラン
-          </div>
+          <button
+            @click="subscribeStarter"
+            :disabled="starterLoading"
+            class="w-full bg-gray-800 text-white py-3 rounded-lg text-sm font-medium hover:bg-gray-900 disabled:opacity-50"
+          >
+            {{ starterLoading ? '処理中...' : 'スタータープランを始める' }}
+          </button>
         </div>
 
         <!-- プロプラン -->
@@ -48,10 +76,10 @@
               <span class="text-green-500">✓</span> AIネタ生成（無制限）
             </li>
             <li class="flex items-center gap-2">
-              <span class="text-green-500">✓</span> 投稿カレンダー
+              <span class="text-green-500">✓</span> 投稿文生成（無制限）
             </li>
             <li class="flex items-center gap-2">
-              <span class="text-green-500">✓</span> 投稿保存（無制限）
+              <span class="text-green-500">✓</span> 投稿カレンダー
             </li>
             <li class="flex items-center gap-2">
               <span class="text-green-500">✓</span> 複数SNS対応
@@ -61,11 +89,11 @@
             </li>
           </ul>
           <button
-            @click="subscribe"
-            :disabled="loading"
+            @click="subscribePro"
+            :disabled="proLoading"
             class="w-full bg-blue-600 text-white py-3 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
           >
-            {{ loading ? '処理中...' : 'プロプランを始める' }}
+            {{ proLoading ? '処理中...' : 'プロプランを始める' }}
           </button>
         </div>
       </div>
@@ -78,43 +106,52 @@ definePageMeta({ middleware: 'auth' })
 useHead({
   title: '料金プラン｜SNS Post Calendar',
   meta: [
-    { name: 'description', content: 'SNS Post Calendarの料金プラン。フリープラン（無料）とプロプラン（月額¥1,980）をご用意。AIネタ生成・投稿文自動作成・カレンダー管理。' }
+    { name: 'description', content: 'SNS Post Calendarの料金プラン。フリー・スターター（¥490）・プロ（¥1,980）の3プランをご用意。AIネタ生成・投稿文自動作成・カレンダー管理。' }
   ]
 })
 
 const supabase = useSupabaseClient()
 const route = useRoute()
-const loading = ref(false)
+const starterLoading = ref(false)
+const proLoading = ref(false)
 const successMsg = ref('')
 
-// Stripeの価格ID（Stripeダッシュボードで作成後に差し替え）
+const STARTER_PRICE_ID = 'price_1T8dtbFeFZeDdhZunTOrY9tl'
 const PRO_PRICE_ID = 'price_1T8BxSFeFZeDdhZutnLcGDoL'
 
 onMounted(() => {
   if (route.query.success === '1') {
-    successMsg.value = 'プロプランへのアップグレードが完了しました！'
+    successMsg.value = 'プランへのアップグレードが完了しました！'
   }
 })
 
-const subscribe = async () => {
-  loading.value = true
+const checkout = async (priceId: string) => {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return
+  const res = await $fetch('/api/stripe/checkout', {
+    method: 'POST',
+    body: { priceId, userId: session.user.id, email: session.user.email }
+  })
+  window.location.href = (res as any).url
+}
+
+const subscribeStarter = async () => {
+  starterLoading.value = true
   try {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return
-
-    const res = await $fetch('/api/stripe/checkout', {
-      method: 'POST',
-      body: {
-        priceId: PRO_PRICE_ID,
-        userId: session.user.id,
-        email: session.user.email
-      }
-    })
-
-    window.location.href = (res as any).url
+    await checkout(STARTER_PRICE_ID)
   } catch (e: any) {
     alert(`エラー: ${e.message}`)
-    loading.value = false
+    starterLoading.value = false
+  }
+}
+
+const subscribePro = async () => {
+  proLoading.value = true
+  try {
+    await checkout(PRO_PRICE_ID)
+  } catch (e: any) {
+    alert(`エラー: ${e.message}`)
+    proLoading.value = false
   }
 }
 </script>

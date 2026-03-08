@@ -27,11 +27,16 @@ export default defineEventHandler(async (event) => {
     const customerId = session.customer as string
     const subscriptionId = session.subscription as string
 
-    if (userId) {
+    if (userId && subscriptionId) {
+      // price IDからプランを判定
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+      const priceId = subscription.items.data[0]?.price.id
+      const plan = priceId === process.env.STARTER_PRICE_ID ? 'starter' : 'pro'
+
       await supabase.from('profiles').update({
         stripe_customer_id: customerId,
         stripe_subscription_id: subscriptionId,
-        plan: 'pro'
+        plan
       }).eq('id', userId)
     }
   }

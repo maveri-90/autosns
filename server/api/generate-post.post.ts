@@ -1,7 +1,10 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@supabase/supabase-js'
 
-const FREE_LIMIT = 10
+const PLAN_LIMITS: Record<string, number> = {
+  free: 10,
+  starter: 20,
+}
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -23,6 +26,7 @@ export default defineEventHandler(async (event) => {
     .single()
 
   if (profile && profile.plan !== 'pro') {
+    const limit = PLAN_LIMITS[profile.plan] ?? PLAN_LIMITS.free
     const today = new Date()
     const resetAt = profile.posts_reset_at ? new Date(profile.posts_reset_at) : null
     const isNewMonth = !resetAt ||
@@ -37,10 +41,11 @@ export default defineEventHandler(async (event) => {
       profile.posts_count = 0
     }
 
-    if ((profile.posts_count || 0) >= FREE_LIMIT) {
+    if ((profile.posts_count || 0) >= limit) {
+      const planName = profile.plan === 'starter' ? 'スタータープラン' : 'フリープラン'
       throw createError({
         statusCode: 429,
-        message: `フリープランの投稿文生成は月${FREE_LIMIT}回までです。プロプランにアップグレードしてください。`
+        message: `${planName}の投稿文生成は月${limit}回までです。上位プランにアップグレードしてください。`
       })
     }
   }
