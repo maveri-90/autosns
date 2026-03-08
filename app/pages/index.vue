@@ -93,35 +93,49 @@
     </section>
 
     <!-- 料金 -->
-    <section class="py-20 max-w-4xl mx-auto px-6">
+    <section class="py-20 max-w-5xl mx-auto px-6">
       <h2 class="text-2xl font-bold text-center mb-3 text-gray-800">シンプルな料金プラン</h2>
       <p class="text-center text-gray-500 mb-12">まずは無料で試してください</p>
-      <div class="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-6">
         <div class="border border-gray-200 rounded-xl p-8">
           <h3 class="text-xl font-bold mb-2">フリー</h3>
           <div class="text-4xl font-bold mb-6">¥0</div>
           <ul class="space-y-2 text-sm text-gray-600 mb-8">
-            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> AIネタ生成（月5回）</li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> AIネタ生成（月3回）</li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 投稿文生成（月10回）</li>
             <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 投稿カレンダー</li>
-            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 投稿保存（10件）</li>
           </ul>
           <NuxtLink to="/login" class="block text-center border border-gray-300 text-gray-600 py-3 rounded-lg text-sm hover:bg-gray-50">
             無料で始める
+          </NuxtLink>
+        </div>
+        <div class="border border-gray-200 rounded-xl p-8">
+          <h3 class="text-xl font-bold mb-2">スターター</h3>
+          <div class="text-4xl font-bold mb-1">¥490</div>
+          <p class="text-gray-400 text-sm mb-6">/ 月（税込）</p>
+          <ul class="space-y-2 text-sm text-gray-600 mb-8">
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> AIネタ生成（月30回）</li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 投稿文生成（月50回）</li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 投稿カレンダー</li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 複数SNS対応</li>
+          </ul>
+          <NuxtLink to="/pricing" class="block text-center bg-gray-800 text-white py-3 rounded-lg text-sm font-medium hover:bg-gray-900">
+            スタータープランで始める
           </NuxtLink>
         </div>
         <div class="border-2 border-blue-500 rounded-xl p-8 relative">
           <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs px-3 py-1 rounded-full">おすすめ</span>
           <h3 class="text-xl font-bold mb-2">プロ</h3>
           <div class="text-4xl font-bold mb-1">¥1,980</div>
-          <p class="text-gray-400 text-sm mb-6">/ 月</p>
+          <p class="text-gray-400 text-sm mb-6">/ 月（税込）</p>
           <ul class="space-y-2 text-sm text-gray-600 mb-8">
             <li class="flex items-center gap-2"><span class="text-green-500">✓</span> AIネタ生成（無制限）</li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 投稿文生成（無制限）</li>
             <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 投稿カレンダー</li>
-            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 投稿保存（無制限）</li>
             <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 複数SNS対応</li>
             <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 優先サポート</li>
           </ul>
-          <NuxtLink to="/login" class="block text-center bg-blue-600 text-white py-3 rounded-lg text-sm font-medium hover:bg-blue-700">
+          <NuxtLink to="/pricing" class="block text-center bg-blue-600 text-white py-3 rounded-lg text-sm font-medium hover:bg-blue-700">
             プロプランで始める
           </NuxtLink>
         </div>
@@ -177,6 +191,7 @@ useHead({
         description: 'AIがSNS投稿ネタを自動提案・投稿文を自動生成するサービス。個人事業主・フリーランスのSNS運用を効率化。',
         offers: [
           { '@type': 'Offer', price: '0', priceCurrency: 'JPY', name: 'フリープラン' },
+          { '@type': 'Offer', price: '490', priceCurrency: 'JPY', name: 'スタータープラン' },
           { '@type': 'Offer', price: '1980', priceCurrency: 'JPY', name: 'プロプラン' }
         ],
         url: 'https://autosns-umber.vercel.app',

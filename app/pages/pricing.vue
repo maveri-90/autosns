@@ -44,10 +44,10 @@
           <p class="text-gray-500 text-sm mb-6">/ 月（税込）</p>
           <ul class="space-y-3 mb-8 text-sm text-gray-600">
             <li class="flex items-center gap-2">
-              <span class="text-green-500">✓</span> AIネタ生成（月5回まで）
+              <span class="text-green-500">✓</span> AIネタ生成（月30回まで）
             </li>
             <li class="flex items-center gap-2">
-              <span class="text-green-500">✓</span> 投稿文生成（月20回まで）
+              <span class="text-green-500">✓</span> 投稿文生成（月50回まで）
             </li>
             <li class="flex items-center gap-2">
               <span class="text-green-500">✓</span> 投稿カレンダー
