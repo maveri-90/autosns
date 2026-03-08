@@ -52,20 +52,46 @@ export default defineEventHandler(async (event) => {
 
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-  const platformGuide = {
-    X: '140文字以内、ハッシュタグ2〜3個',
-    Instagram: '300文字以内、ハッシュタグ5〜10個、絵文字を使う',
-    Threads: '200文字以内、自然な語り口'
-  }[platform] || '200文字以内'
+  const toneLabel = tone === 'casual' ? 'カジュアル・親しみやすく' : tone === 'formal' ? '丁寧・フォーマル' : '専門的・信頼感'
 
-  const prompt = `以下のSNS投稿ネタをもとに、${platform}用の投稿文を作成してください。
+  const platformGuide: Record<string, string> = {
+    X: `【X(Twitter)用 構成】
+① 冒頭フック（1〜2行）: 読者の悩みや共感を引く一言。疑問形・断言・数字を使う
+② 本文（3〜5行）: 具体的なTipsや気づきをテンポよく
+③ まとめ（1行）: 一言で価値を凝縮
+④ CTA（1行）: 「保存して見返してね」「共感したらRT」など
+⑤ ハッシュタグ: 2〜3個
+※全体140文字以内`,
+    Instagram: `【Instagram用 構成】
+① 冒頭フック（1行）: スクロールが止まる一言。「〇〇な人へ」「実は〇〇って知ってた？」形式
+② 本文（5〜8行）: 絵文字を使い読みやすく。改行を多用してテンポを出す
+③ まとめ（1〜2行）: 投稿の価値をひと言で
+④ CTA（1行）: 「保存必須✅」「コメントで教えて💬」「フォローで毎週情報発信中」など
+⑤ ハッシュタグ: 5〜10個（投稿末尾に）
+※全体300文字以内`,
+    Threads: `【Threads用 構成】
+① 冒頭フック（1行）: 思わず続きを読みたくなる問いかけや事実
+② 本文（3〜5行）: 自然な語り口。SNSっぽい話し言葉でOK
+③ CTA（1行）: 「どう思う？コメントで教えて」「フォローすると毎週こういう投稿が届くよ」など
+※全体200文字以内`
+  }
 
-ネタ: ${title}
-概要: ${description}
-トーン: ${tone === 'casual' ? 'カジュアル・親しみやすく' : tone === 'formal' ? '丁寧・フォーマル' : '専門的・信頼感'}
-形式: ${platformGuide}
+  const guide = platformGuide[platform] || '200文字以内で投稿文を作成してください。'
 
-投稿文のみを返してください。説明不要。`
+  const prompt = `あなたは、個人事業主のSNS運用を支援するプロのコピーライターです。
+以下のネタをもとに、思わず「いいね」や「保存」をしたくなる${platform}用の投稿文を1つ作成してください。
+
+【ネタ】${title}
+【概要】${description}
+【トーン】${toneLabel}
+
+${guide}
+
+【厳守ルール】
+- 「いかがでしたか」「〜をご紹介します」「〜してみませんか」などのAI臭い定型文は絶対に使わない
+- 冒頭の1行目で読者の悩みや興味を引く「フック」を必ず入れる
+- CTAは押しつけがましくなく、自然な流れで締める
+- 投稿文のみを返すこと。説明・前置き不要。`
 
   const message = await client.messages.create({
     model: 'claude-sonnet-4-6',
