@@ -61,7 +61,7 @@
               {{ generating ? 'AI生成中...' : 'ネタを生成する' }}
             </button>
             <span v-if="ideasRemaining !== null" class="text-xs text-gray-400 text-center">
-              今月残り{{ ideasRemaining }}回（フリープラン）
+              今月残り{{ ideasRemaining }}回（{{ profile?.plan === 'starter' ? 'スタータープラン' : 'フリープラン' }}）
             </span>
           </div>
         </div>

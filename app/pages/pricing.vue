@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
       <h1 class="text-xl font-bold text-blue-600">SNS Post Calendar</h1>
-      <NuxtLink to="/dashboard" class="text-sm text-gray-500 hover:underline">ダッシュボードへ</NuxtLink>
+      <NuxtLink to="/dashboard" class="text-sm text-gray-500 hover:underline">← ダッシュボードへ戻る</NuxtLink>
     </header>
 
     <main class="max-w-5xl mx-auto px-6 py-16">
