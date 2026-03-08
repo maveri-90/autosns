@@ -166,7 +166,8 @@ const showToast = (message: string, type: 'success' | 'error' = 'success') => {
   toastTimer = setTimeout(() => { toast.value.show = false }, 3000)
 }
 
-const { generating, ideas, ideasRemaining, generatingPost, generatedPost } = useGenerationState()
+const { generating, ideas, ideasRemaining, generatedPost } = useGenerationState()
+const generatingPost = ref(false)
 
 const profile = ref<any>(null)
 const selectedIdea = ref<any>(null)
