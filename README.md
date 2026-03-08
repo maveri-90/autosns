@@ -1,77 +1,91 @@
-# Nuxt Minimal Starter
+# SNS Post Calendar
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+AIがSNS投稿ネタを自動提案・投稿文を自動生成するSaaSアプリ。個人事業主・フリーランスのSNS運用を効率化します。
 
-## Setup
+**本番URL:** https://autosns-umber.vercel.app
 
-Make sure to install dependencies:
+---
+
+## 主な機能
+
+- **AIネタ提案** — 業種・ターゲット・トーンを設定するだけで今月の投稿ネタを20件自動生成
+- **投稿文生成** — X・Instagram・Threads向けに最適化した投稿文をワンクリックで生成
+- **投稿カレンダー** — 投稿スケジュールをカレンダーで一元管理
+- **Googleログイン** — Googleアカウントでかんたん登録・ログイン
+- **Stripe決済** — プロプラン（月¥1,980）の決済対応
+
+---
+
+## 技術スタック
+
+| カテゴリ | 技術 |
+|--------|------|
+| フロントエンド | Nuxt 3 + Tailwind CSS |
+| 認証・DB | Supabase |
+| AI | Anthropic API（Claude Sonnet） |
+| 決済 | Stripe |
+| メール | Resend |
+| デプロイ | Vercel |
+
+---
+
+## 料金プラン
+
+| プラン | 価格 | ネタ生成 | 投稿文生成 |
+|------|------|--------|---------|
+| フリー | ¥0 | 月3回 | 月10回 |
+| プロ | ¥1,980/月 | 無制限 | 無制限 |
+
+---
+
+## 開発環境のセットアップ
 
 ```bash
-# npm
+# 依存パッケージのインストール
 npm install
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
+# 開発サーバー起動（http://localhost:3000）
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+### 必要な環境変数
 
-Build the application for production:
+`.env` ファイルをプロジェクトルートに作成:
 
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+```env
+SUPABASE_URL=...
+SUPABASE_KEY=...
+SUPABASE_SERVICE_KEY=...
+ANTHROPIC_API_KEY=...
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
+RESEND_API_KEY=...
 ```
 
-Locally preview production build:
+---
 
-```bash
-# npm
-npm run preview
+## ブランチ運用
 
-# pnpm
-pnpm preview
+| ブランチ | 用途 |
+|--------|------|
+| `develop` | 開発・プレビュー（push時にVercelプレビューURL生成） |
+| `main` | 本番（マージ時に自動デプロイ） |
 
-# yarn
-yarn preview
+---
 
-# bun
-bun run preview
+## ディレクトリ構成
+
+```
+app/
+  pages/         # ページコンポーネント
+  middleware/    # 認証ミドルウェア
+server/
+  api/           # サーバーサイドAPI
+public/          # 静的ファイル（アイコン等）
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+---
 
-自動デプロイ確認
+## ライセンス
+
+Private
