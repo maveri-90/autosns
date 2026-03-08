@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      title: 'SNS Post Calendar',
       htmlAttrs: { lang: 'ja' },
       meta: [
         { charset: 'utf-8' },

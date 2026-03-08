@@ -87,6 +87,7 @@
 </template>
 
 <script setup lang="ts">
+useHead({ title: 'ログイン｜SNS Post Calendar' })
 const supabase = useSupabaseClient()
 const router = useRouter()
 
