@@ -160,7 +160,8 @@ const resendConfirmation = async () => {
   resendError.value = ''
   const { error } = await supabase.auth.resend({
     type: 'signup',
-    email: email.value
+    email: email.value,
+    options: { emailRedirectTo: 'https://autosns-umber.vercel.app/auth/confirm' }
   })
   if (error) {
     resendError.value = '送信に失敗しました'
