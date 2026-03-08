@@ -116,7 +116,7 @@ const starterLoading = ref(false)
 const proLoading = ref(false)
 const successMsg = ref('')
 
-const STARTER_PRICE_ID = 'STARTER_PRICE_ID_HERE'
+const STARTER_PRICE_ID = 'price_1T8dtbFeFZeDdhZunTOrY9tl'
 const PRO_PRICE_ID = 'price_1T8BxSFeFZeDdhZutnLcGDoL'
 
 onMounted(() => {
