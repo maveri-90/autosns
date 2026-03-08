@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-4">
-        <NuxtLink to="/dashboard" class="text-gray-400 hover:text-gray-600 text-sm">← ダッシュボード</NuxtLink>
-        <h1 class="text-xl font-bold text-blue-600">投稿カレンダー</h1>
+    <header class="bg-white shadow-sm px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3 min-w-0">
+        <NuxtLink to="/dashboard" class="text-gray-400 hover:text-gray-600 text-sm shrink-0">← ダッシュボード</NuxtLink>
+        <h1 class="text-lg font-bold text-blue-600 truncate">投稿カレンダー</h1>
       </div>
-      <button @click="logout" class="text-sm text-gray-500 hover:text-gray-700">ログアウト</button>
+      <button @click="logout" class="text-sm text-gray-500 hover:text-gray-700 shrink-0 ml-2">ログアウト</button>
     </header>
 
     <main class="max-w-5xl mx-auto px-6 py-8">
