@@ -138,7 +138,7 @@ const openPortal = async () => {
       method: 'POST',
       body: { userId: session.user.id }
     })
-    window.location.href = (res as any).url
+    window.open((res as any).url, '_blank')
   } catch (e: any) {
     alert(`エラー: ${e.data?.message || e.message}`)
     portalLoading.value = false

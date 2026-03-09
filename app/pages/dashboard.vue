@@ -266,7 +266,7 @@ const openPortal = async () => {
       method: 'POST',
       body: { userId: currentUserId }
     })
-    window.location.href = (res as any).url
+    window.open((res as any).url, '_blank')
   } catch (e: any) {
     showToast(`エラー: ${e.data?.message || e.message}`, 'error')
     portalLoading.value = false
